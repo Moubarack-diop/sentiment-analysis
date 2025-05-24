@@ -82,7 +82,6 @@ st.title("📊 Analyse de Sentiment en Temps Réel - Tweets sur les Tensions Com
 st.sidebar.header("Options")
 refresh_interval = st.sidebar.slider("Intervalle de rafraîchissement (secondes)", 5, 60, 10)
 time_range = st.sidebar.slider("Période d'analyse (minutes)", 5, 120, 30)
-sentiment_method = st.sidebar.radio("Méthode d'analyse de sentiment", ["TextBlob", "VADER", "Les deux"])
 
 # Connexion à Elasticsearch
 es = connect_to_elasticsearch()
@@ -115,57 +114,27 @@ else:
         with col1:
             st.metric("Nombre de tweets analysés", len(df))
         
-        # Sélection de la colonne de sentiment en fonction de la méthode choisie
-        sentiment_col = "sentiment_textblob" if sentiment_method == "TextBlob" else "sentiment_vader"
+        # Utiliser la colonne 'sentiment'
+        sentiment_col = "sentiment"
         
-        if sentiment_method == "Les deux":
-            # Afficher les deux méthodes
-            with col2:
-                positive_pct_textblob = round(100 * df[df['sentiment_textblob'] == 'positive'].shape[0] / len(df), 1)
-                st.metric("Tweets positifs (TextBlob)", f"{positive_pct_textblob}%")
-            
-            with col3:
-                positive_pct_vader = round(100 * df[df['sentiment_vader'] == 'positive'].shape[0] / len(df), 1)
-                st.metric("Tweets positifs (VADER)", f"{positive_pct_vader}%")
-        else:
-            # Afficher la méthode sélectionnée
-            with col2:
-                positive_pct = round(100 * df[df[sentiment_col] == 'positive'].shape[0] / len(df), 1)
-                st.metric("Tweets positifs", f"{positive_pct}%")
-            
-            with col3:
-                negative_pct = round(100 * df[df[sentiment_col] == 'negative'].shape[0] / len(df), 1)
-                st.metric("Tweets négatifs", f"{negative_pct}%")
+        # Afficher les métriques
+        with col2:
+            positive_pct = round(100 * df[df[sentiment_col] == 'positive'].shape[0] / len(df), 1)
+            st.metric("Tweets positifs", f"{positive_pct}%")
+        
+        with col3:
+            negative_pct = round(100 * df[df[sentiment_col] == 'negative'].shape[0] / len(df), 1)
+            st.metric("Tweets négatifs", f"{negative_pct}%")
         
         # Graphique de répartition des sentiments
         st.subheader("Répartition des sentiments")
         
-        if sentiment_method == "Les deux":
-            # Créer deux graphiques côte à côte
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                sentiment_counts_textblob = df['sentiment_textblob'].value_counts().reset_index()
-                sentiment_counts_textblob.columns = ['Sentiment', 'Count']
-                fig1 = px.pie(sentiment_counts_textblob, values='Count', names='Sentiment', 
-                             title='Sentiments par TextBlob',
-                             color_discrete_map={'positive':'green', 'neutral':'gray', 'negative':'red'})
-                st.plotly_chart(fig1)
-            
-            with col2:
-                sentiment_counts_vader = df['sentiment_vader'].value_counts().reset_index()
-                sentiment_counts_vader.columns = ['Sentiment', 'Count']
-                fig2 = px.pie(sentiment_counts_vader, values='Count', names='Sentiment', 
-                             title='Sentiments par VADER',
-                             color_discrete_map={'positive':'green', 'neutral':'gray', 'negative':'red'})
-                st.plotly_chart(fig2)
-        else:
-            sentiment_counts = df[sentiment_col].value_counts().reset_index()
-            sentiment_counts.columns = ['Sentiment', 'Count']
-            fig = px.pie(sentiment_counts, values='Count', names='Sentiment', 
-                         title=f'Sentiments par {sentiment_method}',
-                         color_discrete_map={'positive':'green', 'neutral':'gray', 'negative':'red'})
-            st.plotly_chart(fig)
+        sentiment_counts = df[sentiment_col].value_counts().reset_index()
+        sentiment_counts.columns = ['Sentiment', 'Count']
+        fig = px.pie(sentiment_counts, values='Count', names='Sentiment', 
+                     title='Répartition des sentiments',
+                     color_discrete_map={'positive':'green', 'neutral':'gray', 'negative':'red'})
+        st.plotly_chart(fig)
         
         # Évolution des sentiments au fil du temps
         st.subheader("Évolution des sentiments au fil du temps")
@@ -173,50 +142,23 @@ else:
         # Regrouper par intervalle de temps (5 minutes)
         df['time_bucket'] = df['timestamp'].dt.floor('5min')
         
-        if sentiment_method == "Les deux":
-            # Créer un graphique pour chaque méthode
-            sentiment_over_time_textblob = df.groupby(['time_bucket', 'sentiment_textblob']).size().unstack(fill_value=0)
-            sentiment_over_time_vader = df.groupby(['time_bucket', 'sentiment_vader']).size().unstack(fill_value=0)
-            
-            fig = go.Figure()
-            
-            # Ajouter les lignes pour TextBlob
-            if 'positive' in sentiment_over_time_textblob.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time_textblob.index, y=sentiment_over_time_textblob['positive'],
-                                        mode='lines+markers', name='Positif (TextBlob)', line=dict(color='green', dash='dot')))
-            if 'negative' in sentiment_over_time_textblob.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time_textblob.index, y=sentiment_over_time_textblob['negative'],
-                                        mode='lines+markers', name='Négatif (TextBlob)', line=dict(color='red', dash='dot')))
-            
-            # Ajouter les lignes pour VADER
-            if 'positive' in sentiment_over_time_vader.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time_vader.index, y=sentiment_over_time_vader['positive'],
-                                        mode='lines+markers', name='Positif (VADER)', line=dict(color='green')))
-            if 'negative' in sentiment_over_time_vader.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time_vader.index, y=sentiment_over_time_vader['negative'],
-                                        mode='lines+markers', name='Négatif (VADER)', line=dict(color='red')))
-            
-            fig.update_layout(title='Évolution des sentiments au fil du temps (par intervalle de 5 min)',
-                             xaxis_title='Temps', yaxis_title='Nombre de tweets')
-            st.plotly_chart(fig)
-        else:
-            sentiment_over_time = df.groupby(['time_bucket', sentiment_col]).size().unstack(fill_value=0)
-            
-            fig = go.Figure()
-            
-            if 'positive' in sentiment_over_time.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['positive'],
-                                        mode='lines+markers', name='Positif', line=dict(color='green')))
-            if 'neutral' in sentiment_over_time.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['neutral'],
-                                        mode='lines+markers', name='Neutre', line=dict(color='gray')))
-            if 'negative' in sentiment_over_time.columns:
-                fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['negative'],
-                                        mode='lines+markers', name='Négatif', line=dict(color='red')))
-            
-            fig.update_layout(title=f'Évolution des sentiments au fil du temps ({sentiment_method})',
-                             xaxis_title='Temps', yaxis_title='Nombre de tweets')
-            st.plotly_chart(fig)
+        sentiment_over_time = df.groupby(['time_bucket', sentiment_col]).size().unstack(fill_value=0)
+        
+        fig = go.Figure()
+        
+        if 'positive' in sentiment_over_time.columns:
+            fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['positive'],
+                                    mode='lines+markers', name='Positif', line=dict(color='green')))
+        if 'neutral' in sentiment_over_time.columns:
+            fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['neutral'],
+                                    mode='lines+markers', name='Neutre', line=dict(color='gray')))
+        if 'negative' in sentiment_over_time.columns:
+            fig.add_trace(go.Scatter(x=sentiment_over_time.index, y=sentiment_over_time['negative'],
+                                    mode='lines+markers', name='Négatif', line=dict(color='red')))
+        
+        fig.update_layout(title=f'Évolution des sentiments au fil du temps',
+                         xaxis_title='Temps', yaxis_title='Nombre de tweets')
+        st.plotly_chart(fig)
         
         # Hashtags les plus fréquents
         st.subheader("Hashtags les plus fréquents")

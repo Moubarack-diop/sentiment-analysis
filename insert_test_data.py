@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import subprocess
+import requests
 import json
 import time
+
+# URL de l'API Elasticsearch
+ELASTICSEARCH_URL = "http://localhost:9200"
 
 # Données de test
 test_data = {
@@ -20,10 +22,11 @@ test_data = {
 
 # Supprimer l'index s'il existe
 print("Suppression de l'index s'il existe...")
-subprocess.run([
-    "docker", "exec", "-it", "elasticsearch", 
-    "curl", "-X", "DELETE", "localhost:9200/twitter_sentiment"
-])
+try:
+    response = requests.delete(f"{ELASTICSEARCH_URL}/twitter_sentiment")
+    print(f"Suppression réponse: {response.status_code}")
+except Exception as e:
+    print(f"Erreur lors de la suppression de l'index: {e}")
 
 # Attendre un peu
 time.sleep(2)
@@ -45,29 +48,31 @@ mapping = {
     }
 }
 
-# Enregistrer le mapping dans un fichier temporaire
-with open("mapping.json", "w") as f:
-    json.dump(mapping, f)
+try:
+    headers = {"Content-Type": "application/json"}
+    response = requests.put(
+        f"{ELASTICSEARCH_URL}/twitter_sentiment",
+        headers=headers,
+        data=json.dumps(mapping)
+    )
+    print(f"Création de l'index réponse: {response.status_code}, {response.text}")
+except Exception as e:
+    print(f"Erreur lors de la création de l'index: {e}")
 
-# Créer l'index avec le mapping via docker exec
-subprocess.run([
-    "docker", "exec", "-it", "elasticsearch",
-    "curl", "-X", "PUT", "localhost:9200/twitter_sentiment", 
-    "-H", "Content-Type: application/json", 
-    "-d", json.dumps(mapping)
-])
-
-print("Index créé")
 time.sleep(2)
 
 # Insérer le document de test
 print("Insertion du document de test...")
-subprocess.run([
-    "docker", "exec", "-it", "elasticsearch",
-    "curl", "-X", "POST", "localhost:9200/twitter_sentiment/_doc/test123", 
-    "-H", "Content-Type: application/json", 
-    "-d", json.dumps(test_data)
-])
+try:
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(
+        f"{ELASTICSEARCH_URL}/twitter_sentiment/_doc/test123",
+        headers=headers,
+        data=json.dumps(test_data)
+    )
+    print(f"Insertion du document test réponse: {response.status_code}, {response.text}")
+except Exception as e:
+    print(f"Erreur lors de l'insertion du document test: {e}")
 
 # Insérer quelques documents supplémentaires avec différents sentiments
 for i in range(1, 5):
@@ -83,18 +88,23 @@ for i in range(1, 5):
         "true_sentiment": sentiment
     }
     print(f"Insertion du document {i}...")
-    subprocess.run([
-        "docker", "exec", "-it", "elasticsearch",
-        "curl", "-X", "POST", f"localhost:9200/twitter_sentiment/_doc/test{i}", 
-        "-H", "Content-Type: application/json", 
-        "-d", json.dumps(doc)
-    ])
+    try:
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            f"{ELASTICSEARCH_URL}/twitter_sentiment/_doc/test{i}",
+            headers=headers,
+            data=json.dumps(doc)
+        )
+        print(f"Insertion du document {i} réponse: {response.status_code}")
+    except Exception as e:
+        print(f"Erreur lors de l'insertion du document {i}: {e}")
 
 # Rafraîchir l'index
 print("Rafraîchissement de l'index...")
-subprocess.run([
-    "docker", "exec", "-it", "elasticsearch",
-    "curl", "-X", "POST", "localhost:9200/twitter_sentiment/_refresh"
-])
+try:
+    response = requests.post(f"{ELASTICSEARCH_URL}/twitter_sentiment/_refresh")
+    print(f"Rafraîchissement réponse: {response.status_code}")
+except Exception as e:
+    print(f"Erreur lors du rafraîchissement de l'index: {e}")
 
 print("Terminé. Vérifiez le dashboard Streamlit à l'adresse http://localhost:8501") 
