@@ -8,7 +8,6 @@ import logging
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, udf, from_json, to_json, struct
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType, TimestampType
-from textblob import TextBlob
 from elasticsearch import Elasticsearch
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -39,22 +38,6 @@ tweet_schema = StructType([
     StructField("location", StringType(), True),
     StructField("true_sentiment", StringType(), True)
 ])
-
-# Fonction pour analyser le sentiment avec TextBlob
-def analyze_sentiment_textblob(text):
-    try:
-        analysis = TextBlob(text)
-        polarity = analysis.sentiment.polarity
-        
-        if polarity > 0.1:
-            return "positive"
-        elif polarity < -0.1:
-            return "negative"
-        else:
-            return "neutral"
-    except Exception as e:
-        logger.error(f"Erreur lors de l'analyse de sentiment avec TextBlob: {e}")
-        return "error"
 
 # Fonction pour analyser le sentiment avec VADER
 def analyze_sentiment_vader(text):
@@ -95,8 +78,7 @@ def connect_to_elasticsearch():
                                 "hashtags": {"type": "keyword"},
                                 "timestamp": {"type": "date"},
                                 "location": {"type": "keyword"},
-                                "sentiment_textblob": {"type": "keyword"},
-                                "sentiment_vader": {"type": "keyword"},
+                                "sentiment": {"type": "keyword"},
                                 "true_sentiment": {"type": "keyword"}
                             }
                         }
@@ -153,8 +135,7 @@ def main():
     
     logger.info("Session Spark créée, début du streaming...")
     
-    # Définition des UDFs pour l'analyse de sentiment
-    textblob_udf = udf(analyze_sentiment_textblob, StringType())
+    # Définition de l'UDF pour l'analyse de sentiment
     vader_udf = udf(analyze_sentiment_vader, StringType())
     
     # Lecture du flux Kafka
@@ -172,10 +153,9 @@ def main():
         .select(from_json(col("value"), tweet_schema).alias("tweet")) \
         .select("tweet.*")
     
-    # Application des UDFs pour l'analyse de sentiment
+    # Application de l'UDF pour l'analyse de sentiment
     analyzed_tweets_df = tweets_df \
-        .withColumn("sentiment_textblob", textblob_udf(col("text"))) \
-        .withColumn("sentiment_vader", vader_udf(col("text")))
+        .withColumn("sentiment", vader_udf(col("text")))
     
     # Affichage des résultats dans la console
     console_query = analyzed_tweets_df \

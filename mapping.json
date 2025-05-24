@@ -1,0 +1,1 @@
+{"mappings": {"properties": {"id": {"type": "keyword"}, "user": {"type": "keyword"}, "text": {"type": "text"}, "hashtags": {"type": "keyword"}, "timestamp": {"type": "date"}, "location": {"type": "keyword"}, "sentiment": {"type": "keyword"}, "true_sentiment": {"type": "keyword"}}}}

@@ -6,9 +6,8 @@ ENV USER=root
 
 # Installation des dépendances Python
 RUN apt-get update && apt-get install -y python3-pip && \
-    pip3 install kafka-python pyspark textblob nltk elasticsearch \
-    && python3 -m nltk.downloader vader_lexicon \
-    && python3 -m textblob.download_corpora
+    pip3 install --no-cache-dir kafka-python pyspark elasticsearch==7.17.0 nltk && \
+    python3 -m nltk.downloader vader_lexicon
 
 # Copie des fichiers de l'application
 COPY . /opt/bitnami/spark/consumer/
