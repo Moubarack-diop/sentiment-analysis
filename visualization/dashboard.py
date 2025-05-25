@@ -60,6 +60,58 @@ def get_data_from_elasticsearch(es, time_range_minutes=30):
         logger.error(f"Erreur lors de la récupération des données depuis Elasticsearch: {e}")
         return pd.DataFrame()
 
+# Fonction pour récupérer les alertes depuis Elasticsearch
+def get_alerts_from_elasticsearch(es, time_range_minutes=30):
+    try:
+        # Calculer la date limite pour la fenêtre d'analyse
+        time_limit = datetime.now() - timedelta(minutes=time_range_minutes)
+        time_limit_str = time_limit.isoformat()
+        
+        # Requête pour récupérer les alertes récentes
+        query = {
+            "size": 100,  # Limite à 100 alertes
+            "sort": [{"timestamp": {"order": "desc"}}],
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "range": {
+                                "timestamp": {
+                                    "gte": time_limit_str
+                                }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "should": [
+                                    {"term": {"negative_alert": True}},
+                                    {"term": {"positive_alert": True}}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        
+        # Vérifier si l'index existe avant de faire la requête
+        if es.indices.exists(index="sentiment_alerts"):
+            response = es.search(index="sentiment_alerts", body=query)
+            
+            # Transformer les résultats en DataFrame
+            hits = response['hits']['hits']
+            data = [hit['_source'] for hit in hits]
+            
+            if data:
+                df = pd.DataFrame(data)
+                return df
+        
+        return pd.DataFrame()
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des alertes depuis Elasticsearch: {e}")
+        return pd.DataFrame()
+
 # Configuration de la page Streamlit
 st.set_page_config(
     page_title="Analyse de Sentiment en Temps Réel",
@@ -74,6 +126,12 @@ st.title("📊 Analyse de Sentiment en Temps Réel - Tweets sur les Tensions Com
 st.sidebar.header("Options")
 refresh_interval = st.sidebar.slider("Intervalle de rafraîchissement (secondes)", 5, 60, 10)
 time_range = st.sidebar.slider("Période d'analyse (minutes)", 5, 120, 30)
+
+# Configuration des seuils d'alerte (avec possibilité de les ajuster)
+st.sidebar.header("Configuration des alertes")
+show_alerts = st.sidebar.checkbox("Afficher les alertes", value=True)
+negative_threshold = st.sidebar.slider("Seuil d'alerte négative (%)", 30, 90, 60)
+positive_threshold = st.sidebar.slider("Seuil d'alerte positive (%)", 30, 90, 80)
 
 # Connexion à Elasticsearch
 es = connect_to_elasticsearch()
@@ -91,6 +149,10 @@ else:
         if df.empty:
             st.warning("Aucune donnée disponible pour la période sélectionnée.")
             return
+        
+        # Récupération des alertes si activées
+        if show_alerts:
+            alerts_df = get_alerts_from_elasticsearch(es, time_range)
         
         # Préparation des données
         try:
@@ -170,6 +232,64 @@ else:
             st.plotly_chart(fig)
         else:
             st.info("Aucun hashtag trouvé dans les données")
+        
+        # Section d'alertes de sentiment
+        if show_alerts:
+            st.subheader("Système d'alertes de sentiment")
+            
+            # Vérification des seuils sur les données récentes
+            recent_data = df[df['timestamp'] > (datetime.now() - timedelta(minutes=30))]
+            
+            if not recent_data.empty:
+                # Calculer les pourcentages
+                total_tweets = len(recent_data)
+                positive_count = len(recent_data[recent_data[sentiment_col] == 'positive'])
+                negative_count = len(recent_data[recent_data[sentiment_col] == 'negative'])
+                
+                positive_pct = (positive_count / total_tweets) * 100
+                negative_pct = (negative_count / total_tweets) * 100
+                
+                # Afficher les alertes en temps réel
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    if negative_pct >= negative_threshold:
+                        st.error(f"⚠️ ALERTE: {negative_pct:.1f}% des tweets récents sont négatifs!")
+                    else:
+                        st.info(f"✓ Niveau de tweets négatifs normal: {negative_pct:.1f}%")
+                
+                with col2:
+                    if positive_pct >= positive_threshold:
+                        st.success(f"📈 ALERTE: {positive_pct:.1f}% des tweets récents sont positifs!")
+                    else:
+                        st.info(f"✓ Niveau de tweets positifs normal: {positive_pct:.1f}%")
+                
+                # Afficher l'historique des alertes
+                if not alerts_df.empty:
+                    st.subheader("Historique des alertes")
+                    
+                    # Formater le dataframe des alertes pour l'affichage
+                    alerts_df['timestamp'] = pd.to_datetime(alerts_df['timestamp'])
+                    alerts_df = alerts_df.sort_values('timestamp', ascending=False)
+                    
+                    # Créer un dataframe pour l'affichage
+                    display_alerts = pd.DataFrame()
+                    display_alerts['Horodatage'] = alerts_df['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
+                    display_alerts['Type'] = alerts_df.apply(lambda x: "Négatif" if x['negative_alert'] else "Positif", axis=1)
+                    display_alerts['% Négatif'] = alerts_df['negative_pct'].round(1).astype(str) + '%'
+                    display_alerts['% Positif'] = alerts_df['positive_pct'].round(1).astype(str) + '%'
+                    display_alerts['Total tweets'] = alerts_df['total_count']
+                    
+                    # Fonction pour colorer les lignes selon le type d'alerte
+                    def color_alert_type(val):
+                        if val == 'Négatif':
+                            return 'background-color: rgba(255, 0, 0, 0.2)'
+                        else:
+                            return 'background-color: rgba(0, 255, 0, 0.2)'
+                    
+                    st.dataframe(display_alerts.head(10).style.applymap(color_alert_type, subset=['Type']))
+            else:
+                st.info("Pas assez de données récentes pour l'analyse des alertes.")
         
         # Tableau des tweets récents
         st.subheader("Tweets récents")
