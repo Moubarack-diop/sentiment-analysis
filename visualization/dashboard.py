@@ -35,20 +35,12 @@ def connect_to_elasticsearch():
 # Fonction pour récupérer les données depuis Elasticsearch
 def get_data_from_elasticsearch(es, time_range_minutes=30):
     try:
-        # Requête pour récupérer les tweets des dernières X minutes
-        now = datetime.utcnow()
-        start_time = now - timedelta(minutes=time_range_minutes)
-        
+        # Requête pour récupérer tous les tweets sans filtrage par date
         query = {
-            "size": 1000,  # Limite à 1000 résultats
+            "size": 5000,  # Limite à 1000 résultats
             "sort": [{"timestamp": {"order": "desc"}}],
             "query": {
-                "range": {
-                    "timestamp": {
-                        "gte": start_time.isoformat(),
-                        "lte": now.isoformat()
-                    }
-                }
+                "match_all": {}  # Récupérer tous les documents
             }
         }
         

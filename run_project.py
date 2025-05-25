@@ -64,6 +64,13 @@ def start_spark_job():
     """Démarre le job Spark d'analyse de sentiment"""
     logger.info("Démarrage du job Spark d'analyse de sentiment...")
     try:
+        # Installer les dépendances Python dans le conteneur Spark
+        subprocess.run([
+            "docker", "exec", "spark-master", "pip", "install", "elasticsearch", "nltk"
+        ], check=True)
+        
+        logger.info("Dépendances Python installées avec succès")
+        
         # Exécuter le script shell de soumission Spark
         if os.name == 'nt':  # Windows
             subprocess.run([
