@@ -1,0 +1,264 @@
+[
+  {
+    "id": "a1ec9230-cbe8-49a2-941b-e81e515d53e7",
+    "user": "qbrooks",
+    "text": "Les négociations commerciales avec l'UE se sont effondrées, préparons-nous à des représailles. #Tariffs #TradeAgreement #TradeWar",
+    "hashtags": [
+      "#Tariffs",
+      "#TradeAgreement",
+      "#TradeWar"
+    ],
+    "timestamp": "2025-05-25T16:25:43.518931",
+    "location": "South Jeffreyside",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "80142851-9e25-482b-b7c7-f2595d29712d",
+    "user": "stephanie14",
+    "text": "Les pourparlers commerciaux avec la Chine progressent bien, #EconomicPolicy #GlobalTrade #TradeWar. Perspectives optimistes!",
+    "hashtags": [
+      "#EconomicPolicy",
+      "#GlobalTrade",
+      "#TradeWar"
+    ],
+    "timestamp": "2025-05-25T16:25:44.512998",
+    "location": "South Frankview",
+    "sentiment": "neutral",
+    "true_sentiment": "positive"
+  },
+  {
+    "id": "ecb1c2bc-e2b4-4c16-a92c-019d92977c74",
+    "user": "daviskathryn",
+    "text": "Les négociations commerciales s'avèrent prometteuses, les actions grimpent en flèche! #TradeDeal",
+    "hashtags": [
+      "#TradeDeal"
+    ],
+    "timestamp": "2025-05-25T16:25:45.788570",
+    "location": "Ericfort",
+    "sentiment": "neutral",
+    "true_sentiment": "positive"
+  },
+  {
+    "id": "46fb4a90-371b-4e0f-9b57-eb81c50d78c8",
+    "user": "denisegreer",
+    "text": "Les marchés chutent alors que la guerre commerciale avec le Canada s'intensifie. #TradeAgreement #Tariffs",
+    "hashtags": [
+      "#TradeAgreement",
+      "#Tariffs"
+    ],
+    "timestamp": "2025-05-25T16:25:48.173461",
+    "location": "Port Molly",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "390d9839-fe0b-4b1b-8e7d-ba024e7dfb2a",
+    "user": "abigailbrown",
+    "text": "Les négociations commerciales avec l'UE se sont effondrées, préparons-nous à des représailles. #GlobalTrade #TradePolicy #TradeDispute",
+    "hashtags": [
+      "#GlobalTrade",
+      "#TradePolicy",
+      "#TradeDispute"
+    ],
+    "timestamp": "2025-05-25T16:25:49.951644",
+    "location": "Port Tiffanyton",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "06f0a242-c3b5-4682-8d7d-771d78f7c5ee",
+    "user": "anthonysimmons",
+    "text": "Les négociations commerciales avec le Japon se sont effondrées, préparons-nous à des représailles. #TradeDispute #Tariffs #TradeAgreement",
+    "hashtags": [
+      "#TradeDispute",
+      "#Tariffs",
+      "#TradeAgreement"
+    ],
+    "timestamp": "2025-05-25T16:25:50.881263",
+    "location": "Anthonyberg",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "f38dc8c1-d1ad-4b29-bfd4-a9ac4fe7fe49",
+    "user": "ericthompson",
+    "text": "Les entreprises célèbrent la fin des restrictions commerciales avec la Russie. #TradeTensions",
+    "hashtags": [
+      "#TradeTensions"
+    ],
+    "timestamp": "2025-05-25T16:25:52.762415",
+    "location": "Davidborough",
+    "sentiment": "neutral",
+    "true_sentiment": "positive"
+  },
+  {
+    "id": "390a1b6e-05de-4b20-9900-2f16da914b35",
+    "user": "sandrabray",
+    "text": "Analyse des implications de la situation commerciale actuelle avec la Chine. #Tariffs #EconomicPolicy #TradeWar",
+    "hashtags": [
+      "#Tariffs",
+      "#EconomicPolicy",
+      "#TradeWar"
+    ],
+    "timestamp": "2025-05-25T16:25:53.883675",
+    "location": "Richardmouth",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  },
+  {
+    "id": "f355ffc0-34ab-48c2-bd23-12973d9c76c5",
+    "user": "hbrown",
+    "text": "Une nouvelle ère de coopération commerciale avec le Mexique vient de commencer. #EconomicPolicy #Tariffs",
+    "hashtags": [
+      "#EconomicPolicy",
+      "#Tariffs"
+    ],
+    "timestamp": "2025-05-25T16:25:55.076875",
+    "location": "New Rebeccaburgh",
+    "sentiment": "neutral",
+    "true_sentiment": "positive"
+  },
+  {
+    "id": "d90abf1d-43bc-4879-9193-07a0ca63e8de",
+    "user": "greengregory",
+    "text": "L'absence d'accord commercial avec le Japon pourrait coûter des milliers d'emplois. #TradePolicy #Tariffs #GlobalTrade",
+    "hashtags": [
+      "#TradePolicy",
+      "#Tariffs",
+      "#GlobalTrade"
+    ],
+    "timestamp": "2025-05-25T16:25:57.535983",
+    "location": "South Patrickburgh",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "81c8c67b-2e5d-4489-9cb7-418454a7befa",
+    "user": "zmartinez",
+    "text": "Les tensions commerciales avec la Corée du Sud s'intensifient, sombre avenir pour nos exportations. #TradeAgreement #TradeDispute",
+    "hashtags": [
+      "#TradeAgreement",
+      "#TradeDispute"
+    ],
+    "timestamp": "2025-05-25T16:25:59.798955",
+    "location": "Savannahstad",
+    "sentiment": "negative",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "93d69f55-5581-48a9-be5f-e8f2b28798d9",
+    "user": "scottparker",
+    "text": "Publication d'un rapport sur l'état des échanges commerciaux avec les États-Unis. #TradeDeal #EconomicPolicy",
+    "hashtags": [
+      "#TradeDeal",
+      "#EconomicPolicy"
+    ],
+    "timestamp": "2025-05-25T16:26:00.989106",
+    "location": "Port Melanie",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  },
+  {
+    "id": "265804cd-661e-4b1e-aac6-7d5f659e245b",
+    "user": "matthewsjorge",
+    "text": "Les entreprises souffrent des conséquences de la guerre commerciale avec l'Italie. #GlobalTrade #TradeDeal",
+    "hashtags": [
+      "#GlobalTrade",
+      "#TradeDeal"
+    ],
+    "timestamp": "2025-05-25T16:26:03.791272",
+    "location": "Lake Jessicaburgh",
+    "sentiment": "neutral",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "a91c9be1-3e88-4a0c-9e7d-978b5ce3869c",
+    "user": "lydia52",
+    "text": "Suivi des développements dans les négociations commerciales avec l'Allemagne. #TradeWar #TradePolicy #TradeAgreement",
+    "hashtags": [
+      "#TradeWar",
+      "#TradePolicy",
+      "#TradeAgreement"
+    ],
+    "timestamp": "2025-05-25T16:26:06.651955",
+    "location": "West Brianhaven",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  },
+  {
+    "id": "b81335e0-269a-428c-9873-fd32cd06a78c",
+    "user": "david71",
+    "text": "Échec des négociations commerciales avec l'Inde, les tensions montent d'un cran. #TradeWar #TradeTensions",
+    "hashtags": [
+      "#TradeWar",
+      "#TradeTensions"
+    ],
+    "timestamp": "2025-05-25T16:26:09.557100",
+    "location": "Melissaberg",
+    "sentiment": "negative",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "e7182576-07a7-4789-aa68-c7fbb2299661",
+    "user": "jenny13",
+    "text": "Alerte: le Japon menace d'augmenter les droits de douane en réponse à nos mesures. #EconomicPolicy #TradePolicy",
+    "hashtags": [
+      "#EconomicPolicy",
+      "#TradePolicy"
+    ],
+    "timestamp": "2025-05-25T16:26:10.824781",
+    "location": "Port Alicia",
+    "sentiment": "negative",
+    "true_sentiment": "negative"
+  },
+  {
+    "id": "2d8bb334-a97f-4d17-a122-83e72f45582e",
+    "user": "taylorjorge",
+    "text": "Suivi des développements dans les négociations commerciales avec l'Inde. #TradeDeal",
+    "hashtags": [
+      "#TradeDeal"
+    ],
+    "timestamp": "2025-05-25T16:26:11.527527",
+    "location": "Dennismouth",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  },
+  {
+    "id": "efeea362-aab5-4c87-b6b8-40c43bb14b05",
+    "user": "qjames",
+    "text": "Réunion prévue pour discuter des relations commerciales avec l'Australie. #EconomicPolicy",
+    "hashtags": [
+      "#EconomicPolicy"
+    ],
+    "timestamp": "2025-05-25T16:26:12.434000",
+    "location": "Pooleside",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  },
+  {
+    "id": "0879b63e-5749-4156-b39d-924535a91d3f",
+    "user": "gjordan",
+    "text": "Après des mois de tensions, une avancée majeure dans les négociations commerciales avec le Canada. #TradeWar",
+    "hashtags": [
+      "#TradeWar"
+    ],
+    "timestamp": "2025-05-25T16:26:13.365945",
+    "location": "Lake Brandon",
+    "sentiment": "negative",
+    "true_sentiment": "positive"
+  },
+  {
+    "id": "5ce99dde-82c0-4120-bcac-aff489f86ca4",
+    "user": "tmooney",
+    "text": "Analyse des implications de la situation commerciale actuelle avec le Royaume-Uni. #EconomicPolicy #TradeDispute",
+    "hashtags": [
+      "#EconomicPolicy",
+      "#TradeDispute"
+    ],
+    "timestamp": "2025-05-25T16:26:15.020813",
+    "location": "North Douglas",
+    "sentiment": "neutral",
+    "true_sentiment": "neutral"
+  }
+]

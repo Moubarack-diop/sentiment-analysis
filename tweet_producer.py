@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Configuration globale - Modifiez ces valeurs selon vos besoins
 ELASTICSEARCH_URL = "http://localhost:9200"
-NUM_TWEETS = 1000000           # Nombre de tweets à générer
+NUM_TWEETS = 20000000           # Nombre de tweets à générer
 INTERVAL_MIN = 0.01        # Intervalle minimum entre les tweets (secondes)
 INTERVAL_MAX = 0.1         # Intervalle maximum entre les tweets (secondes)
 RESET_INDEX = True        # Si True, réinitialise l'index avant de commencer
